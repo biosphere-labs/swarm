@@ -9,6 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from decomposition_pipeline.config.settings import settings
+from decomposition_pipeline.errors.handlers import register_error_handlers
+from decomposition_pipeline.middleware import ErrorHandlingMiddleware
 
 
 @asynccontextmanager
@@ -48,6 +50,15 @@ app.add_middleware(
     allow_methods=settings.cors_methods,
     allow_headers=settings.cors_headers,
 )
+
+# Add error handling middleware
+app.add_middleware(
+    ErrorHandlingMiddleware,
+    enable_request_logging=settings.debug,
+)
+
+# Register error handlers
+register_error_handlers(app)
 
 
 @app.get("/")
