@@ -95,7 +95,7 @@ async def api_status():
     }
 
 
-# Include routers (will be added in future tasks)
-# from decomposition_pipeline.api.routers import pipeline, sse
-# app.include_router(pipeline.router, prefix="/api/v1")
-# app.include_router(sse.router, prefix="/api/v1")
+# Include routers
+from decomposition_pipeline.api.routers import sse
+
+app.include_router(sse.router, prefix="/api/v1")
