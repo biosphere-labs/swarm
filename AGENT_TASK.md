@@ -1,138 +1,133 @@
-# Agent Task
+# AGENT TASK: Implement Technique Catalog
 
-**Task:** Set up backend project structure with FastAPI, LangGraph, and dependencies
-**Branch:** feature/setup-backend-structure
-**Started:** 2025-10-30T17:23:00Z
-**Priority:** HIGH (foundational task)
-**Estimated:** N/A
+## Task Overview
+Implement a comprehensive Technique Catalog that stores pre-defined algorithmic decomposition techniques from computer science literature. This catalog will be used by the Level 2 Technique Selection Subgraph to select the best decomposition technique for each paradigm.
 
-## Description
+## Requirements
 
-Set up a complete Python backend project using FastAPI and LangGraph for the Decomposition Pipeline system. This includes:
+### Core Functionality
+Based on brainstorm_1.md and DECOMPOSITION_TAXONOMY.md, the Technique Catalog must:
 
-1. Initialize a UV-based Python project with proper structure
-2. Configure dependencies for FastAPI, LangGraph, and related tools
-3. Create a modular directory structure for the 5-level pipeline architecture
-4. Set up configuration management and environment handling
-5. Create initial FastAPI application with health check endpoint
-6. Configure CORS for frontend integration
-7. Set up development tools (linting, formatting, type checking)
+1. Store pre-defined algorithmic techniques organized by paradigm
+2. Support retrieval of applicable techniques based on problem characteristics
+3. Use rule-based scoring (no ML) to rank technique applicability
+4. Provide formal justifications citing algorithmic literature
+5. Validate technique prerequisites against problem characteristics
+
+### Technical Specifications
+
+#### Data Model
+The catalog uses the following structure from brainstorm_1.md:
+
+```python
+class Technique:
+    name: str  # e.g., "Divide and Conquer"
+    paradigm: str  # e.g., "structural"
+    formal_definition: str  # Mathematical/algorithmic definition
+    prerequisites: List[str]  # What problem must satisfy
+    complexity: str  # Time/space complexity
+    applicability_rules: List[Rule]  # When to use
+    literature_references: List[str]  # Papers/textbooks
+    implementation_strategy: str  # How agents should apply it
+```
+
+#### Paradigms to Support (8 total)
+1. Structural Decomposition
+2. Functional Decomposition
+3. Temporal Decomposition
+4. Spatial Decomposition
+5. Hierarchical Decomposition
+6. Computational Decomposition
+7. Data Decomposition
+8. Dependency Decomposition
+
+#### Techniques Per Paradigm
+From brainstorm_1.md and DECOMPOSITION_TAXONOMY.md:
+
+**Structural:** Divide-and-Conquer, Graph Partitioning, Tree Decomposition, Modular Decomposition
+
+**Functional:** Task Parallelism, Pipeline Decomposition, MapReduce, Fork-Join
+
+**Temporal:** Event Sourcing, Pipeline Stages, Batch Processing, Stream Processing
+
+**Spatial:** Range Partitioning, Hash Partitioning, Geographic Decomposition, Grid Decomposition
+
+**Hierarchical:** Multi-tier Architecture, Pyramid Decomposition, Recursive Hierarchies
+
+**Computational:** Model Parallelism, Data Parallelism, Mixture of Experts
+
+**Data:** Vertical Partitioning, Horizontal Partitioning, Feature Decomposition
+
+**Dependency:** Topological Sort, Critical Path Method, Async/Await Decomposition
+
+## Implementation Plan
+
+### 1. Create Core Data Models
+- Define Technique, Rule, and TechniqueCatalog classes
+- Use Pydantic for validation
+- Support JSON serialization for persistence
+
+### 2. Populate Catalog with Techniques
+- Implement catalog initialization from brainstorm_1.md examples
+- Include formal definitions from literature
+- Add prerequisite checks for each technique
+- Define applicability rules with scoring thresholds
+
+### 3. Implement Retrieval and Scoring
+- `get_applicable_techniques(paradigm, problem_characteristics)` method
+- `check_prerequisites(technique, characteristics)` method
+- `score_technique(technique, characteristics)` method using rules
+- Return sorted list of techniques by score
+
+### 4. Add Persistence Layer
+- Save/load catalog to/from JSON
+- Support catalog versioning
+- Allow catalog updates without code changes
+
+### 5. Write Comprehensive Tests
+- Test technique retrieval for each paradigm
+- Test prerequisite checking
+- Test rule-based scoring
+- Test edge cases (no matching techniques, multiple high scores)
+- Verify all 8 paradigms have techniques
 
 ## Acceptance Criteria
 
-- UV project initialized with pyproject.toml
-- All core dependencies declared (fastapi, langgraph, langchain, uvicorn, etc.)
-- Directory structure follows clean architecture principles
-- Backend directory contains organized modules for:
-  - API endpoints (routers)
-  - LangGraph subgraphs (by level)
-  - State schemas
-  - Agent pools
-  - Utilities
-- FastAPI application runs successfully with health check endpoint
-- CORS configured for local development
-- Development tools configured (ruff, mypy, pytest)
-- README.md with setup and run instructions
+- [ ] TechniqueCatalog class implemented with all required methods
+- [ ] All 8 paradigms have at least 3 techniques each
+- [ ] Each technique has formal definition, prerequisites, and references
+- [ ] Rule-based scoring works correctly (no ML/learning)
+- [ ] Techniques can be retrieved by paradigm and problem characteristics
+- [ ] Prerequisites are properly validated
+- [ ] Catalog can be persisted to/loaded from JSON
+- [ ] Test coverage >= 90%
+- [ ] All tests pass
+- [ ] Documentation includes usage examples
 
-## Implementation Notes
-
-### Project Initialization (Completed)
-- Initialized UV project in `backend/` directory
-- Project name: `decomposition-pipeline`
-- Python version: 3.13+
-- Build system: Hatchling (for editable installs)
-
-### Dependencies Installed (Completed)
-**Core Dependencies:**
-- fastapi 0.120.2 - Web framework
-- uvicorn 0.38.0 - ASGI server
-- langgraph 1.0.2 - LangGraph framework
-- langchain 1.0.3 - LangChain core
-- langchain-anthropic 1.0.0 - Anthropic provider
-- langchain-openai 1.0.1 - OpenAI provider
-- pydantic 2.12.3 - Data validation
-- pydantic-settings 2.11.0 - Settings management
-- python-dotenv 1.2.1 - Environment variables
-- sse-starlette 3.0.2 - Server-Sent Events
-- aiosqlite 0.21.0 - Async SQLite
-
-**Dev Dependencies:**
-- pytest 8.4.2 - Testing framework
-- pytest-asyncio 1.2.0 - Async test support
-- pytest-cov 7.0.0 - Coverage reporting
-- ruff 0.14.2 - Linter and formatter
-- mypy 1.18.2 - Type checker
-- httpx 0.28.1 - HTTP client for tests
-- hatchling 1.27.0 - Build system
-
-### Directory Structure Created (Completed)
+## File Structure
 ```
-backend/
-├── src/decomposition_pipeline/
-│   ├── api/              # FastAPI app and routes
-│   ├── graphs/           # LangGraph subgraphs by level
-│   │   ├── level1_paradigm/
-│   │   ├── level2_technique/
-│   │   ├── level3_decomposition/
-│   │   ├── level3_integration/
-│   │   ├── level4_solution/
-│   │   └── level5_integration/
-│   ├── schemas/          # Pydantic state schemas
-│   ├── agents/           # Agent pool management
-│   ├── utils/            # Utility functions
-│   ├── config/           # Configuration
-│   └── main.py           # Entry point
-├── tests/                # Test suite
-├── data/                 # Data directory (gitignored)
-└── configuration files
+backend/src/decomposition_pipeline/
+├── catalog/
+│   ├── __init__.py
+│   ├── models.py          # Technique, Rule, TechniqueCatalog classes
+│   ├── techniques.py      # Pre-populated techniques
+│   └── catalog.json       # Serialized catalog (optional)
+└── tests/
+    └── test_catalog.py    # Comprehensive test suite
 ```
 
-### Configuration Files Created (Completed)
-- `pyproject.toml` - UV project configuration with dependencies
-- `ruff.toml` - Linter/formatter configuration
-- `mypy.ini` - Type checker configuration
-- `pytest.ini` - Test configuration
-- `.env.example` - Environment variables template
-- `.gitignore` - Git ignore patterns
-- `README.md` - Comprehensive documentation
+## References
+- brainstorm_1.md: Lines 848-1108 (Technique Catalog Design)
+- brainstorm_1.md: Lines 254-263 (Example Techniques per Paradigm)
+- DECOMPOSITION_TAXONOMY.md: Full taxonomy of patterns and techniques
+- CLRS (Introduction to Algorithms) for formal definitions
+- MapReduce (Dean & Ghemawat 2004)
+- SEDA Architecture (Welsh et al. 2001)
+- Event Sourcing (Fowler 2005)
 
-### FastAPI Application (Completed)
-Created `src/decomposition_pipeline/api/app.py` with:
-- Lifespan context manager for startup/shutdown
-- CORS middleware configuration
-- Three endpoints:
-  - `GET /` - API information
-  - `GET /health` - Health check
-  - `GET /api/v1/status` - Configuration status
-- Settings integration from environment
-
-### Configuration Management (Completed)
-Created `src/decomposition_pipeline/config/settings.py` with:
-- Pydantic Settings for environment variable management
-- API configuration (title, version, debug mode)
-- CORS configuration
-- LLM provider configuration (OpenAI/Anthropic)
-- LangGraph configuration (checkpoints, limits)
-- Agent pool configuration
-- Human-in-the-loop approval gates configuration
-- Logging configuration
-
-### Tests (Completed)
-Created `tests/test_api.py` with:
-- Fixture for test client
-- Three test cases for all endpoints
-- 79% code coverage achieved
-- All tests passing
-
-### Development Tools (Completed)
-- Ruff: Formatted and linted all code successfully
-- Tests: All 3 tests passing with 79% coverage
-- Server: Verified successful startup on port 8000
-
-### Key Decisions
-1. Used src-layout for better packaging practices
-2. Separated graph subgraphs by level for clarity
-3. Used pydantic-settings for configuration management
-4. Configured both OpenAI and Anthropic providers
-5. Made approval gates configurable per pipeline level
-6. Used hatchling as build backend for UV compatibility
+## Success Metrics
+- Catalog contains 24+ techniques (3+ per paradigm)
+- All techniques have literature references
+- Retrieval and scoring functions execute in < 100ms
+- Test suite has 90%+ coverage
+- Zero circular dependencies in technique prerequisites
