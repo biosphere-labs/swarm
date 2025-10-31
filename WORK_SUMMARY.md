@@ -1,264 +1,447 @@
-# Task #27: Settings & Configuration Panel - Work Summary
+# Markdown Rendering Implementation - Work Summary
 
 ## Overview
-Successfully implemented a comprehensive settings and configuration panel for the SWARM pipeline system, enabling users to configure approval gates, agent pools, LLM models, pipeline parameters, and UI preferences through an intuitive tabbed interface.
+Implemented a comprehensive markdown rendering system for the Swarm frontend with syntax highlighting, theme support, and extensive customization options.
 
-## Task Completion Status
-✅ **COMPLETED** - All requirements met and exceeded
+## Task: #31 - Implement Markdown Rendering with react-markdown and Syntax Highlighting
 
-## Deliverables
+### Deliverables
 
-### 1. Core Components (1,750+ lines)
+#### 1. Core Components
 
-#### SettingsPanel.tsx (450+ lines)
-- Main panel with tabbed interface
-- Action buttons (Save, Reset, Import/Export)
-- Validation error display
-- Unsaved changes warning
-- Keyboard shortcuts (Ctrl+S)
-- Real-time status indicators
-- Confirmation dialogs
+**`frontend/components/MarkdownRenderer.tsx`** (360+ lines)
+- Full-featured markdown renderer with GFM support
+- Custom styling for all markdown elements
+- Theme support (light/dark)
+- Accessibility features
+- Responsive design
+- HTML sanitization options
 
-**Key Features:**
-- Export settings as JSON with copy/download
-- Import settings from JSON file
-- Reset to factory defaults
-- Discard unsaved changes
-- Save status feedback (success/error)
-- Last saved timestamp display
+**`frontend/components/CodeBlock.tsx`** (200+ lines)
+- Syntax-highlighted code blocks
+- Copy-to-clipboard functionality
+- Language badge display
+- Optional line numbers
+- Theme support (light/dark)
+- Inline code component
 
-#### ApprovalGateSettings.tsx (200+ lines)
-- Level 1-4 gate toggles with priority badges
-- Timeout configuration (1-1440 minutes)
-- Notification preferences (approval, rejection, timeout)
-- Auto-approve mode toggle
-- Inline validation with error messages
+**`frontend/lib/markdown-config.ts`** (170+ lines)
+- Markdown configuration and plugins
+- Syntax highlighting themes
+- Utility functions for markdown processing
+- Language detection and display names
+- URL validation helpers
+- Heading slug generation
 
-**Configuration Options:**
-- Individual gate enable/disable per level
-- Default timeout setting
-- Three notification types
-- Auto-approve for development
+#### 2. Testing
 
-#### AgentPoolSettings.tsx (250+ lines)
-- Five pool configurations (Paradigm, Technique, Decomposition, Execution, Integration)
-- Pool statistics dashboard
-- Per-pool configuration cards
-- Priority badges (Low, Medium, High, Critical)
+**`frontend/__tests__/MarkdownRenderer.test.tsx`** (620+ lines)
+- Comprehensive test coverage
+- 60+ test cases covering:
+  - Basic rendering
+  - Headings (h1-h6) with auto-generated slugs
+  - Text formatting (bold, italic, strikethrough)
+  - Lists (ordered, unordered, nested)
+  - Links (internal, external, with callbacks)
+  - Images (lazy loading, error handling)
+  - Code blocks (inline and block, with syntax highlighting)
+  - Tables
+  - Blockquotes
+  - Horizontal rules
+  - Complex mixed content
+  - HTML support and sanitization
+  - Custom component overrides
+  - Theme support
+  - Copy functionality
 
-**Pool Settings:**
-- Enable/disable toggle
-- Pool size (1-100 agents)
-- Priority level (1-10)
-- Max concurrent executions
-- Real-time statistics (total pools, active pools, total agents, max concurrent)
+#### 3. Dependencies Added
 
-#### LLMSettings.tsx (300+ lines)
-- Multi-provider support (OpenAI, Anthropic, Together AI, Ollama)
-- Per-level model selection (4 levels)
-- Generation parameters configuration
-- Secure API key management
-- Ollama endpoint configuration
+Updated `frontend/package.json` with:
+- `react-syntax-highlighter@^15.5.0` - Syntax highlighting
+- `rehype-raw@^7.0.0` - HTML support in markdown
+- `@types/react-syntax-highlighter@^15.5.13` - TypeScript types
 
-**LLM Parameters:**
-- Temperature (0.0-2.0)
-- Max tokens (1-32000)
-- Top-P nucleus sampling
-- Frequency penalty (-2.0 to 2.0)
-- Presence penalty (-2.0 to 2.0)
-- Masked API key input with show/hide toggle
+Note: `react-markdown@^9.0.1` and `remark-gfm@^4.0.0` were already installed.
 
-#### PipelineSettings.tsx (200+ lines)
-- Selection parameters (paradigms, techniques)
-- Decomposition configuration
-- Execution parameters (timeout, retry)
-- Performance optimizations
-- Configuration summary dashboard
+## Features Implemented
 
-**Pipeline Options:**
-- Max paradigms (1-20)
-- Technique diversity threshold (0-100%)
-- Decomposition depth (1-10)
-- Pipeline timeout (10-3600 seconds)
-- Retry attempts (0-10)
-- Retry delay (0-60 seconds)
-- Parallel execution toggle
-- Result caching toggle
+### Markdown Support
+- ✅ Headings (h1-h6) with auto-generated anchor IDs
+- ✅ Paragraphs with proper spacing
+- ✅ Lists (ordered, unordered, nested)
+- ✅ Code blocks with language detection
+- ✅ Inline code with custom styling
+- ✅ Links with external link handling
+- ✅ Images with lazy loading
+- ✅ Tables with responsive design
+- ✅ Blockquotes with custom styling
+- ✅ Bold, italic, strikethrough
+- ✅ Horizontal rules
+- ✅ GitHub Flavored Markdown (GFM)
 
-#### UIPreferences.tsx (150+ lines)
-- Theme selection (Light, Dark, System)
-- Layout configuration
-- Display preferences
-- Notification settings
-- Current configuration preview
+### Code Block Features
+- ✅ Syntax highlighting with 100+ languages
+- ✅ Copy-to-clipboard with visual feedback
+- ✅ Language badge display
+- ✅ Optional line numbers
+- ✅ Theme support (VS Code Dark Plus, GitHub Light)
+- ✅ Responsive design
+- ✅ Custom styling with Tailwind CSS
 
-**UI Options:**
-- Color theme with system sync
-- Dashboard layout (sidebar/topbar)
-- Default view selection
-- Animations toggle
-- Compact mode
-- Advanced options display
-- Notifications toggle
-- Sound effects toggle
+### Advanced Features
+- ✅ Theme support (light/dark)
+- ✅ HTML sanitization (XSS protection)
+- ✅ External link handling (target="_blank")
+- ✅ Image lazy loading
+- ✅ Custom component overrides
+- ✅ Link click callbacks
+- ✅ Image error handling
+- ✅ Heading anchor links
+- ✅ Responsive tables
+- ✅ Accessibility features
 
-### 2. State Management (250+ lines)
+## Usage Examples
 
-#### settings-store.ts
-- Zustand store with localStorage persistence
-- Comprehensive action creators
-- Real-time validation integration
-- Theme application logic
-- Import/export functionality
+### Basic Markdown Rendering
 
-**Store Features:**
-- Automatic persistence to localStorage
-- Optimistic UI updates
-- Validation error tracking
-- Unsaved changes detection
-- Last saved timestamp
-- Loading states
+```typescript
+import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 
-**Actions:**
-- updateSettings(): Bulk update
-- updateApprovalGates(): Gate-specific updates
-- updateAgentPool(): Pool-specific updates
-- updateLLMConfig(): LLM configuration
-- updatePipelineConfig(): Pipeline parameters
-- updateUIPreferences(): UI settings
-- saveSettings(): Persist to storage
-- resetToDefaults(): Factory reset
-- discardChanges(): Revert unsaved
-- exportSettings(): JSON export
-- importSettings(): JSON import
-- validateCurrentSettings(): Run validation
+// Simple text
+<MarkdownRenderer content="# Hello\n\nThis is **markdown**" />
 
-### 3. Type System (400+ lines)
+// With theme
+<MarkdownRenderer content={content} theme="dark" />
 
-#### settings.ts
-- Comprehensive TypeScript types
-- Validation functions
-- Default settings factory
-- LLM model constants
-- Custom error classes
+// With line numbers
+<MarkdownRenderer content={content} showLineNumbers />
+```
 
-**Types Defined:**
-- Settings: Root settings interface
-- ApprovalGateConfig: Gate configuration
-- AgentPoolConfig: Individual pool config
-- AgentPoolsConfig: All pools map
-- LLMConfig: Language model settings
-- PipelineConfig: Pipeline parameters
-- UIPreferences: UI customization
-- LLMProvider: Provider type union
-- Theme: Theme type union
-- DashboardLayout: Layout type union
+### Code Block with Syntax Highlighting
 
-**Validation:**
-- Range validation for all numeric fields
-- Cross-field validation (e.g., maxConcurrent ≤ poolSize)
-- Custom error messages
-- Field-level error tracking
-- SettingsValidationError class
+```typescript
+const code = `
+\`\`\`python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
 
-### 4. UI Components (4 files)
+print(fibonacci(10))
+\`\`\`
+`;
 
-#### tabs.tsx
-- Radix UI Tabs integration
-- Custom styling with Tailwind
-- Accessible keyboard navigation
+<MarkdownRenderer
+  content={code}
+  theme="dark"
+  showLineNumbers
+/>
+```
 
-#### input.tsx
-- Styled input component
-- Error state styling
-- Number input support
+### Solution Display
 
-#### switch.tsx
-- Toggle switch component
-- Radix UI Switch primitive
-- Accessible with keyboard
+```typescript
+interface Solution {
+  content: string;
+  // ... other fields
+}
 
-#### select.tsx
-- Dropdown select component
-- Searchable options
-- Scroll buttons
-- Item indicators
+function SolutionViewer({ solution }: { solution: Solution }) {
+  return (
+    <div className="solution-container">
+      <MarkdownRenderer
+        content={solution.content}
+        theme="dark"
+        showLineNumbers
+        allowHtml={false} // Safe rendering
+      />
+    </div>
+  );
+}
+```
 
-### 5. Routing
+### Documentation with Custom Callbacks
 
-#### app/settings/page.tsx
-- Next.js App Router page
-- Client-side rendering
-- Minimal wrapper for SettingsPanel
+```typescript
+function DocumentationViewer({ content }: { content: string }) {
+  const handleLinkClick = (href: string, event: React.MouseEvent) => {
+    console.log('Link clicked:', href);
+    // Custom navigation logic
+  };
 
-### 6. Testing (500+ lines)
+  const handleImageError = (src: string, error: Event) => {
+    console.error('Failed to load image:', src);
+    // Fallback image logic
+  };
 
-#### SettingsPanel.test.tsx
-- 50+ test cases across all components
-- Unit tests for each settings category
-- Integration tests for store
-- User interaction tests
-- Validation tests
+  return (
+    <MarkdownRenderer
+      content={content}
+      theme="light"
+      onLinkClick={handleLinkClick}
+      onImageError={handleImageError}
+      openLinksInNewTab={true}
+      lazyLoadImages={true}
+    />
+  );
+}
+```
 
-**Test Coverage:**
-- SettingsPanel rendering and actions
-- ApprovalGateSettings toggles and inputs
-- AgentPoolSettings pool management
-- LLMSettings provider and model selection
-- PipelineSettings parameter updates
-- UIPreferences theme and layout
-- Store validation logic
-- Import/export functionality
-- Keyboard shortcuts
-- Error handling
+### Custom Component Overrides
 
-## Files Created
+```typescript
+import { Components } from 'react-markdown';
 
-### Production Code (14 files, 3,300+ lines)
-1. frontend/types/settings.ts (400+ lines)
-2. frontend/lib/settings-store.ts (250+ lines)
-3. frontend/components/SettingsPanel.tsx (450+ lines)
-4. frontend/components/settings/ApprovalGateSettings.tsx (200+ lines)
-5. frontend/components/settings/AgentPoolSettings.tsx (250+ lines)
-6. frontend/components/settings/LLMSettings.tsx (300+ lines)
-7. frontend/components/settings/PipelineSettings.tsx (200+ lines)
-8. frontend/components/settings/UIPreferences.tsx (150+ lines)
-9. frontend/components/ui/tabs.tsx (60 lines)
-10. frontend/components/ui/input.tsx (30 lines)
-11. frontend/components/ui/switch.tsx (30 lines)
-12. frontend/components/ui/select.tsx (150 lines)
-13. frontend/app/settings/page.tsx (15 lines)
+const customComponents: Partial<Components> = {
+  // Custom paragraph with special styling
+  p: ({ children }) => (
+    <p className="my-custom-paragraph">{children}</p>
+  ),
 
-### Test Code (1 file, 500+ lines)
-14. frontend/__tests__/SettingsPanel.test.tsx (500+ lines)
+  // Custom link with analytics
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      onClick={() => trackClick(href)}
+      className="custom-link"
+    >
+      {children}
+    </a>
+  ),
+};
 
-## Git Workflow
+<MarkdownRenderer
+  content={content}
+  components={customComponents}
+/>
+```
 
-### Branch Information
-- Branch: feature/settings-configuration-panel
-- Worktree: worktrees/feature-settings-panel
-- Commits: 1 comprehensive commit
-- PR Number: #30
+### Standalone Code Block
 
-## Conclusion
+```typescript
+import { CodeBlock } from '@/components/CodeBlock';
 
-Successfully delivered a production-ready settings and configuration panel that meets all requirements and provides an excellent user experience. The implementation is well-tested, type-safe, and follows React/Next.js best practices.
+<CodeBlock
+  className="language-typescript"
+  showLineNumbers
+  theme="dark"
+  onCopy={(code) => console.log('Copied:', code)}
+>
+  {`interface User {
+  id: string;
+  name: string;
+  email: string;
+}`}
+</CodeBlock>
+```
 
-### Metrics
-- Files Created: 14
-- Total Lines: 3,300+
-- Test Cases: 50+
-- Components: 11
-- Features: 30+
-- Validation Rules: 15+
+### Inline Code
 
-### Links
-- Pull Request: https://github.com/fluidnotions/swarm/pull/30
-- Branch: feature/settings-configuration-panel
-- Commit: 317060a9
+```typescript
+import { InlineCode } from '@/components/CodeBlock';
 
----
+<p>
+  Use the <InlineCode>useState</InlineCode> hook for state management.
+</p>
+```
 
-Completed: October 31, 2025
-Task: #27 - Build Settings & Configuration Panel
-Status: ✅ Complete and Ready for Review
+## Component API
+
+### MarkdownRenderer Props
+
+```typescript
+interface MarkdownRendererProps {
+  content: string;                    // Markdown content to render
+  className?: string;                 // Additional CSS classes
+  theme?: 'light' | 'dark';          // Syntax highlighting theme
+  showLineNumbers?: boolean;          // Show line numbers in code blocks
+  allowHtml?: boolean;                // Allow raw HTML (use with caution)
+  openLinksInNewTab?: boolean;        // Open external links in new tab
+  lazyLoadImages?: boolean;           // Enable lazy loading for images
+  onLinkClick?: (href: string, event: React.MouseEvent) => void;
+  onImageError?: (src: string, error: Event) => void;
+  components?: Partial<Components>;   // Custom component overrides
+}
+```
+
+### CodeBlock Props
+
+```typescript
+interface CodeBlockProps {
+  children?: React.ReactNode;         // Code content
+  className?: string;                 // Language class (e.g., 'language-python')
+  showLineNumbers?: boolean;          // Show line numbers
+  theme?: 'light' | 'dark';          // Syntax theme
+  showCopyButton?: boolean;           // Show copy button
+  showLanguageBadge?: boolean;        // Show language badge
+  wrapperClassName?: string;          // Additional wrapper classes
+  onCopy?: (code: string) => void;   // Copy callback
+}
+```
+
+## Configuration
+
+### Markdown Contexts
+
+The `markdown-config.ts` provides pre-configured contexts for different use cases:
+
+```typescript
+import { markdownContexts } from '@/lib/markdown-config';
+
+// For user-submitted content (safe)
+markdownContexts.userContent
+// { allowHtml: false, options: safeMarkdownOptions }
+
+// For trusted content (documentation)
+markdownContexts.trustedContent
+// { allowHtml: true, options: baseMarkdownOptions }
+
+// For solution content
+markdownContexts.solutionContent
+// { allowHtml: false, options: baseMarkdownOptions }
+```
+
+### Syntax Themes
+
+```typescript
+import { SYNTAX_THEMES } from '@/lib/markdown-config';
+
+// Available themes:
+// - 'light': GitHub Light theme
+// - 'dark': VS Code Dark Plus theme
+```
+
+### Utility Functions
+
+```typescript
+import {
+  extractLanguage,
+  getLanguageDisplayName,
+  isExternalUrl,
+  generateHeadingSlug,
+  preprocessMarkdown,
+} from '@/lib/markdown-config';
+
+// Extract language from className
+extractLanguage('language-python') // 'python'
+
+// Get display name for language
+getLanguageDisplayName('ts') // 'TypeScript'
+
+// Check if URL is external
+isExternalUrl('https://example.com') // true
+isExternalUrl('/internal/path') // false
+
+// Generate slug from heading text
+generateHeadingSlug('Hello World') // 'hello-world'
+
+// Preprocess markdown content
+preprocessMarkdown(content)
+```
+
+## Testing
+
+Run tests with:
+```bash
+cd frontend
+npm test MarkdownRenderer.test.tsx
+```
+
+Test coverage:
+- ✅ 60+ test cases
+- ✅ All markdown elements
+- ✅ Code block features
+- ✅ Copy functionality
+- ✅ Theme support
+- ✅ Callbacks and events
+- ✅ Edge cases
+- ✅ Security (HTML sanitization)
+
+## Security Considerations
+
+### HTML Sanitization
+- By default, `allowHtml` is `false` to prevent XSS attacks
+- Only enable `allowHtml` for trusted content
+- Use `safeMarkdownOptions` for user-submitted content
+
+### External Links
+- External links automatically get `rel="noopener noreferrer"`
+- Prevents tabnabbing vulnerabilities
+
+### Image Loading
+- Images use lazy loading by default
+- Error handling prevents broken image issues
+
+## Performance Optimizations
+
+- ✅ Memoized markdown processing
+- ✅ Memoized component renderers
+- ✅ Lazy image loading
+- ✅ Efficient re-rendering
+- ✅ Code splitting support
+
+## Accessibility Features
+
+- ✅ Semantic HTML elements
+- ✅ Proper heading hierarchy
+- ✅ ARIA labels on interactive elements
+- ✅ Keyboard navigation support
+- ✅ Focus management
+- ✅ Screen reader friendly
+
+## Browser Compatibility
+
+- ✅ Modern browsers (Chrome, Firefox, Safari, Edge)
+- ✅ Clipboard API support with fallback
+- ✅ CSS Grid and Flexbox
+- ✅ ES6+ features (transpiled by Next.js)
+
+## Future Enhancements
+
+Potential improvements for future iterations:
+- [ ] Storybook stories for visual documentation
+- [ ] Math equation support (KaTeX/MathJax)
+- [ ] Mermaid diagram support
+- [ ] Custom emoji support
+- [ ] Search highlighting
+- [ ] Table of contents generation
+- [ ] Print stylesheet
+- [ ] PDF export
+- [ ] Diff view for code blocks
+- [ ] Collapse/expand code blocks
+
+## Integration Points
+
+This component can be integrated with:
+- Solution display pages
+- Documentation viewer
+- Problem descriptions
+- Chat messages with markdown
+- Code snippets in feedback
+- Agent communication logs
+
+## Files Changed
+
+1. ✅ `frontend/package.json` - Added dependencies
+2. ✅ `frontend/lib/markdown-config.ts` - Configuration and utilities
+3. ✅ `frontend/components/CodeBlock.tsx` - Code block component
+4. ✅ `frontend/components/MarkdownRenderer.tsx` - Main renderer
+5. ✅ `frontend/__tests__/MarkdownRenderer.test.tsx` - Comprehensive tests
+6. ✅ `WORK_SUMMARY.md` - This documentation
+
+## Summary
+
+Successfully implemented a production-ready markdown rendering system with:
+- 🎨 Beautiful, customizable styling
+- 🌓 Light/dark theme support
+- 💻 Advanced code syntax highlighting
+- 📋 Copy-to-clipboard functionality
+- 🔒 Security-first design
+- ♿ Accessibility compliance
+- 🧪 Comprehensive test coverage
+- 📚 Clear documentation
+- 🚀 Performance optimized
+
+The implementation provides a robust foundation for displaying markdown content throughout the Swarm application, from solution displays to documentation and user-generated content.
+
+Total lines of code: **1,350+ lines** across all files.
